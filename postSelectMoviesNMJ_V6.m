@@ -1,45 +1,31 @@
 clear all; close all;
 
-% choose czi and movie directory
-disp('Choose folder containing czi movies');
-moviesToRegisterDirectory = uigetdir;
-disp('Choose folder to save registered movies');
-saveDir = uigetdir;
+% Part 1: Choose czi and movie directory
+[mov_to_reg_dir,output_dir] = choose_dirs()
+[roiFiles,cziFiles,nMovies] = load_mov_to_reg()
 
-cd(moviesToRegisterDirectory)
-roiFiles=dir(fullfile(cd,'*NMJ_ROIs.mat')); % select all ROI .mat files
-nMovies = size(roiFiles,1); % number of movies to analyze
 nFrames = 2000;
 
-for fileNum = 1:nMovies
-fname = roiFiles(fileNum).name;
-fname(end-12:end)=[];
-cziFiles(fileNum,1) = dir([fname '.czi']);
-end
-
-% saveDir = '/Volumes/My Book Thunderbolt Duo/Isacoff Lab/Adam';
-% saveDir = '/Volumes/My Book Thunderbolt Duo/Isacoff Lab/Adam';
-
-% Tracking
 for movieNum=1:nMovies;
-% Load movie
 % try
-tic
-cd(moviesToRegisterDirectory)
+
+    tic
+    cd(mov_to_reg_dir)
     load(roiFiles(movieNum).name)
 
-    FileName = cziFiles(movieNum).name;
+    FileName = cziFiles(movieNum).name;    
     % read movies (you need BF toolbox to read carl zeiss movies)
+
     [optimizer, ~] = imregconfig('multimodal');
     metric = registration.metric.MattesMutualInformation;
     optimizer.MaximumIterations = 100;
     optimizer.InitialRadius = (6.250000e-03)/6;
     optimizer.Epsilon= 1.5e-6;
     optimizer.GrowthFactor = 1.05;  
-    
+
     trackingCoordinates=cell(nNmjs,1);
 
-      
+    %First Step Through NMJs  
     parfor nmjNum = 1:nNmjs
         
          disp(['Loading reader for NMJ #: ',num2str(nmjNum)]);   
@@ -134,13 +120,13 @@ cd(moviesToRegisterDirectory)
    
     reader = bfGetReader(FileName);
         
-    cd(saveDir)
+    cd(output_dir)
 
     FileNameApp = FileName;
     FileNameApp(end-3:end)=[];
     mkdir(FileNameApp);cd(FileNameApp)
     
-    copyfile([moviesToRegisterDirectory '/' roiFiles(movieNum).name],cd)
+    copyfile([mov_to_reg_dir '/' roiFiles(movieNum).name],cd)
 
     for nmjNum = 1:nNmjs
         %track = zeros(size(
@@ -177,7 +163,7 @@ tic
  % Affine registration
 for movieNum=1:nMovies;
  % load tracked movies
-    cd(saveDir)
+    cd(output_dir)
     FileName = cziFiles(movieNum).name;
     FileNameApp = FileName;
     FileNameApp(end-3:end)=[];
@@ -382,7 +368,7 @@ toc
 
 % Demon registration
 for movieNum=1:nMovies;
-    cd(saveDir)
+    cd(output_dir)
     FileName = cziFiles(movieNum).name;
     FileNameApp = FileName;
     FileNameApp(end-3:end)=[];
@@ -447,6 +433,6 @@ toc
 % end
 
 
-% cd(moviesToRegisterDirectory)
+% cd(mov_to_reg_dir)
 end
 
