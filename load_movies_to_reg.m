@@ -1,3 +1,6 @@
+% Created by: Bernal Jimenez
+% 03/17/2016
+
 
 function [mov_to_reg_dir, output_dir] = choose_dirs()
 
@@ -8,7 +11,7 @@ output_dir = uigetdir;
 
 end
 
-function [roiFiles, cziFiles, nMovies] = load_mov_to_reg()
+function [roiFiles, cziFiles, nMovies] = load_mov_names()
 
 cd(mov_to_reg_Dir)
 roiFiles=dir(fullfile(cd,'*NMJ_ROIs.mat')); % select all ROI .mat files
@@ -21,3 +24,4 @@ for movieNum = 1:nMovies
 end
 
 end
+
