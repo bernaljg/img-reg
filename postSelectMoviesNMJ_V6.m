@@ -9,13 +9,14 @@ nFrames = 2000;
 for movieNum=1:nMovies;
 
     tic
+
     cd(mov_to_reg_dir)
+
+    % Load Variables
     load(roiFiles(movieNum).name)
-
     FileName = cziFiles(movieNum).name;    
-    % read movies (you need BF toolbox to read carl zeiss movies)
 
-        
+    % Load the reader using bftools       
     disp(['Loading reader for NMJ #: ',num2str(nmjNum)]);   
     reader = bfGetReader(file_name);
     disp(['Finished loading reader for NMJ #: ',num2str(nmjNum)]);   
@@ -27,7 +28,8 @@ for movieNum=1:nMovies;
     cd(output_dir)
     FileNameApp = FileName;
     FileNameApp(end-3:end)=[];
-    mkdir(FileNameApp);cd(FileNameApp)
+    mkdir(FileNameApp);
+    cd(FileNameApp);
     copyfile([mov_to_reg_dir '/' roiFiles(movieNum).name],cd)
         
     % Save Smoothed Coordinates in Seperate Folders
@@ -38,6 +40,8 @@ for movieNum=1:nMovies;
 end
 
 tic
+
+
  % Affine registration
 for movieNum=1:nMovies;
  % load tracked movies
@@ -70,13 +74,8 @@ for movieNum=1:nMovies;
         frameIn = imadjust(frameIn);
         frameIn = wiener2(frameIn,[15 15]);
         gthresh = graythresh(frameIn);
-%         refFrame = im2double(im2bw(frameIn,gthresh));
         refFrame = enhanceContrastForAffine(refFrameNorm);
 	time_enhance_contrast = timeit(enhanceContrastForAffine)
-%         refFrameThresh = graythresh(refFrame);
-%         refFrameBW = im2bw(refFrame,refFrameThresh);
-%         se = strel('disk',25);
-%         refFrameBWdil = imdilate(refFrameBW,se);
 
         [optimizer, ~] = imregconfig('multimodal');
         metric = registration.metric.MattesMutualInformation;
@@ -98,26 +97,16 @@ for movieNum=1:nMovies;
             movingFrame = imhistmatch(movingFrame,refFrame);
             movingFrame = wiener2(movingFrame,[10 10]);
 
-%             movingFrame = enhanceContrastForAffine(trackMov(:,:,qq));
-
-%             movingFrame = imhistmatch(movingFrame,refFrame);
-%             movingFrame(~refFrameBWdil)=0;
-            
             prevTformAff=tfAffine{qq-1}.T;       
-            
-%             sf1(qq,1)=  prevTformAff(1,1);
-%             sf2(qq,1)=  prevTformAff(2,2);
-%             tf1(qq,1)=  prevTformAff(3,1);
-%             tf2(qq,1)=  prevTformAff(3,2);
 
             if prevTformAff(1,1)<scaleThresh || prevTformAff(2,2)<scaleThresh 
-            prevTformAff(1,1)=1;
-            prevTformAff(2,2)=1;    
+		    prevTformAff(1,1)=1;
+		    prevTformAff(2,2)=1;    
             end
             
             if prevTformAff(3,1)>distTreshX || prevTformAff(3,2)>distTreshY 
-            prevTformAff(3,1)=0;
-            prevTformAff(3,2)=0;    
+		    prevTformAff(3,1)=0;
+		    prevTformAff(3,2)=0;    
             end
             
             prevTformAff=affine2d(prevTformAff);
@@ -125,19 +114,6 @@ for movieNum=1:nMovies;
 	    time_affine_regis = timeit(imregtform)
                 'InitialTransformation',prevTformAff); 
           
-         
-            
-            
-% %             
-%             Rfixed = imref2d(size(refFrame));
-%             [movingRegisteredAffine,~] = imwarp(movingFrame,tfAffine{qq,1},'OutputView',Rfixed); 
-% %             
-%             [movingRegisteredAffine2,~] = imwarp(trackMov(:,:,qq),tfAffine{qq,1},'OutputView',Rfixed);
-%             tempMov(:,:,qq)=imadjust(movingRegisteredAffine2);
-% %             imshowpair(imadjust(movingRegisteredAffine2),(movingFrame));drawnow;refresh
-%             imshowpair(refFrame,(movingRegisteredAffine2));drawnow;refresh
-% 
-% %             imshow(movingFrame);drawnow;refresh
              disp(['Affine NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 
         end
@@ -147,18 +123,8 @@ for movieNum=1:nMovies;
       movingFrame = enhanceContrastForAffine(trackMov(:,:,qq));
             movingFrame = imhistmatch(movingFrame,refFrame);
             movingFrame = wiener2(movingFrame,[10 10]);
-
-%             movingFrame = enhanceContrastForAffine(trackMov(:,:,qq));
-
-%             movingFrame = imhistmatch(movingFrame,refFrame);
-%             movingFrame(~refFrameBWdil)=0;
             
             prevTformAff=tfAffine{qq+1}.T;       
-            
-%             sf1(qq,1)=  prevTformAff(1,1);
-%             sf2(qq,1)=  prevTformAff(2,2);
-%             tf1(qq,1)=  prevTformAff(3,1);
-%             tf2(qq,1)=  prevTformAff(3,2);
 
             if prevTformAff(1,1)<scaleThresh || prevTformAff(2,2)<scaleThresh 
             prevTformAff(1,1)=1;
@@ -174,16 +140,6 @@ for movieNum=1:nMovies;
             tfAffine{qq,1} = imregtform(movingFrame,refFrame,'affine',optimizer,metric,...
 	    'InitialTransformation',prevTformAff);
 	    time_affine_back = timeit(imregtform)
-% %             
-%             Rfixed = imref2d(size(refFrame));
-%             [movingRegisteredAffine,~] = imwarp(movingFrame,tfAffine{qq,1},'OutputView',Rfixed); 
-% %             
-%             [movingRegisteredAffine2,~] = imwarp(trackMov(:,:,qq),tfAffine{qq,1},'OutputView',Rfixed);
-%             tempMov(:,:,qq)=imadjust(movingRegisteredAffine2);
-% %             imshowpair(imadjust(movingRegisteredAffine2),(movingFrame));drawnow;refresh
-%             imshowpair(refFrame,(movingRegisteredAffine2));drawnow;refresh
-% 
-% %             imshow(movingFrame);drawnow;refresh
 
         disp(['Affine NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 
