@@ -101,7 +101,7 @@ end
 
 % Smooths Tracking Coordinates, Adds Padding and Saves Coordinates for all NMJs
 
-function [smooth_tracking_coors,track] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp)
+function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp)
     
     for nmjNum = 1:nNmjs
     
@@ -113,9 +113,9 @@ function [smooth_tracking_coors,track] = save_smooth_coors(reader,trackingCoordi
         tcoord2s = round(smooth(tcoord2,trackSmoothFact));
         trackingCoordsSmoothed = [tcoord1s tcoord2s trackingCoords(:,3) trackingCoords(:,4)];
         
-	clear track
+	clear tracked_mov
                
-        track=zeros(trackingCoordsSmoothed(1,4)+1,trackingCoordsSmoothed(1,3)+1,nFrames,'uint16');
+        tracked_mov = zeros(trackingCoordsSmoothed(1,4)+1,trackingCoordsSmoothed(1,3)+1,nFrames,'uint16');
 
         for qq = 1:nFrames
             thisFrame = bfGetPlane(reader, qq);
@@ -125,9 +125,9 @@ function [smooth_tracking_coors,track] = save_smooth_coors(reader,trackingCoordi
         end
         
         thisfilename = strcat(FileNameApp,'_registerNMJ','_',num2str(nmjNum),'.mat');
-        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','track','maxFrameNum','-v7.3')
+        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','tracked_mov','maxFrameNum','-v7.3')
         
-	clear track trackingCoordsSmoothed trackingCoords
+	clear tracked_mov trackingCoordsSmoothed trackingCoords
 
     end
 	
