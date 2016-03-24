@@ -4,7 +4,7 @@ clear all; close all;
 [mov_to_reg_dir,output_dir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(mov_to_reg_dir)
 
-nFrames = 200;
+nFrames = 2000;
 
 
 %%% Tracks and Crops NMJs from Movies
@@ -101,4 +101,5 @@ for movieNum=1:nMovies;
 
 cd(mov_to_reg_dir)
 
+save('trial_num1')
 end

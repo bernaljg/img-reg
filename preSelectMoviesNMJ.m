@@ -4,15 +4,20 @@
 clear; close all;
 
 % theseAreTheFilesYoureLookingFor = dir('*.czi');
-
+try
 fileNames = uigetfile('*.czi','Select Movies','MultiSelect', 'on');
-    if iscell(fileNames)
+catch
+fileNames = dir('*.czi')
+fileNames = fileNames.name
+end
+
+if iscell(fileNames)
     nummovies=size(fileNames,2);
     else
     nummovies=1;
     end
 
-nFrames=200; 
+nFrames=2000; 
 for movnum = 1:nummovies
     if iscell(fileNames)
             thisFile = fileNames{movnum};
@@ -65,10 +70,10 @@ for movnum = 1:nummovies
     load(preSelectFiles(movnum).name)
     thisFile = preSelectFiles(movnum).name;
 
-    imshow(maxFrame,[])
-    button = questdlg('Is this a good reference frame?');
+    %imshow(maxFrame,[])
+    %button = questdlg('Is this a good reference frame?');
     close all
-    if strcmp(button,'Yes');
+    if true %strcmp(button,'Yes');
         maxFrame = maxFrame;
     else 
         h=imlook3d(LocalMaxStack);
@@ -79,11 +84,11 @@ for movnum = 1:nummovies
         maxFrameNum = LocalMax_locs(str2double(dlgAnswer{1}));
     end   
 
-        maxFrame = padarray(maxFrame,[100 100],mean(maxFrame(:)));
+    maxFrame = padarray(maxFrame,[100 100],mean(maxFrame(:)));
 
-    imshow(maxFrame,[]);
-    answer = inputdlg('How many nmjs?');
-    nNmjs = str2num(answer{1});
+    %imshow(maxFrame,[]);
+    %answer = inputdlg('How many nmjs?');
+    nNmjs = 1%str2num(answer{1});
     close all
     for nNmjNum = 1:nNmjs
         BW = roipoly(maxFrame.*((2^16)/max(maxFrame(:))));
