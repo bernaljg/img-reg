@@ -2,9 +2,9 @@ clear all; close all;
 
 %%% Choose directories
 [mov_to_reg_dir,output_dir] = choose_dirs()
-[roiFiles,cziFiles,nMovies] = load_mov_to_reg()
+[roiFiles,cziFiles,nMovies] = load_mov_names(mov_to_reg_dir)
 
-nFrames = 2000;
+nFrames = 200;
 
 
 %%% Tracks and Crops NMJs from Movies
@@ -18,13 +18,11 @@ for movieNum=1:nMovies;
     FileName = cziFiles(movieNum).name;    
 
     % Loads the reader using bftools       
-    disp(['Loading reader for NMJ #: ',num2str(nmjNum)]);   
-    reader = bfGetReader(file_name);
-    disp(['Finished loading reader for NMJ #: ',num2str(nmjNum)]);   
+    reader = bfGetReader(FileName);
     
     tic
     % Calculates tracking coordinates for all nmjs 
-    trackingCoordinates = find_tracking_coor(reader,regPropsStore,maxFrame,maxFrameNum,nFrames,NMJs)
+    trackingCoordinates = find_tracking_coor(reader,regPropsStore,maxFrame,maxFrameNum,nFrames,nNmjs)
     timetotrack = toc
 
     % Makes output folder
@@ -37,7 +35,7 @@ for movieNum=1:nMovies;
     
     tic
     % Saves smoothed movies for all nmjs in seperate folders
-    save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp)
+    save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp,nNmjs)
     timetosavetrack = toc
 end
 
@@ -55,19 +53,19 @@ for movieNum=1:nMovies;
     trackedFileNames = dir('*register*.mat');
     
     % Loads variables
-    load(roiFiles(movieNum).name;
+    load(roiFiles(movieNum).name);
 
     % Loads all tracked nmjs for this movie into array
-    tracked_nmjs = load_tracked_nmjs(nNmjs,trackedFileNames)
+    tracked_nmjs = load_tracked_nmjs(nNmjs,trackedFileNames);
     
     tic
     % Finds affine transform for all nmjs in this movie
-    affineTransforms = find_affine_transf(roiFiles,movieNum,tracked_nmjs)
+    affineTransforms = find_affine_transf(roiFiles,movieNum,tracked_nmjs);
     timeaffine = toc
 
     tic
     % Applies affine transformation and saves movies for all nmjs in this movie 
-    save_affine_mov(affineTransforms,tracked_nmjs,trackedFileNames,maxFrameNum,nFrames,nNmjs)
+    save_affine_mov(affineTransforms,tracked_nmjs,trackedFileNames,maxFrameNum,nFrames,nNmjs);
     timesaveaffine = toc
 
 end
@@ -86,19 +84,19 @@ for movieNum=1:nMovies;
     affinedFileNames = dir('*register*.mat');
     
     % Loads variables
-    load(roiFiles(movieNum).name)
+    load(roiFiles(movieNum).name);
 
     % Loads affined nmj movies into array
-    affined_nmjs = load_affined_nmjs(nNmjs,affinedFileNames)
+    affined_nmjs = load_affined_nmjs(nNmjs,affinedFileNames);
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
-    [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,affined_nmjs)
+    [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,affined_nmjs);
     timedemon = toc
     
     tic
     % Saves demonized nmj movies for this movie
-    save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs)
+    save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
     timesavedemon = toc
 
 cd(mov_to_reg_dir)

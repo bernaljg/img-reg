@@ -12,7 +12,7 @@ fileNames = uigetfile('*.czi','Select Movies','MultiSelect', 'on');
     nummovies=1;
     end
 
-nFrames=2000; 
+nFrames=200; 
 for movnum = 1:nummovies
     if iscell(fileNames)
             thisFile = fileNames{movnum};
