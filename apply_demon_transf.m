@@ -25,13 +25,14 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 		    frameNorm = affined_nmj(:,:,qq);
 		    movingFrame=enhanceContrast(frameNorm);
 		    
-		    [dField,~] = imregdemons(movingFrame,refFrame,[400 200 100],...
+		    %Pass Arrays to GPU
+		    movingFrameGPU = gpuArray(movingFrame);
+		    refFrameGPU = gpuArray(refFrame);
+		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrame,refFrame,[400 200 100],...
 		    'PyramidLevels',3,'AccumulatedFieldSmoothing',1);
 
-		    movingRegistered = imwarp(frameNorm,dField);  
-		    
-		    demonDispFields{qq,1}=dField;
-		    demon(:,:,qq)=(movingRegistered);
+		    demonDispFields{qq,1}=dFieldGPU;
+		    demon(:,:,qq)=(movingRegGPU);
 		    disp(['NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 	  
 		end
