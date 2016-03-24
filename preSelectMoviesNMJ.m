@@ -72,23 +72,23 @@ for movnum = 1:nummovies
 
     %imshow(maxFrame,[])
     %button = questdlg('Is this a good reference frame?');
-    close all
-    if true %strcmp(button,'Yes');
-        maxFrame = maxFrame;
-    else 
-        h=imlook3d(LocalMaxStack);
-        disp('Find frame to use as reference frame');
-        uiwait(h);close all
-        dlgAnswer = inputdlg('Enter the frame number you want to use');
-        maxFrame = LocalMaxStack(:,:,str2double(dlgAnswer{1}));
-        maxFrameNum = LocalMax_locs(str2double(dlgAnswer{1}));
-    end   
+    %close all
+    %if true %strcmp(button,'Yes');
+     %   maxFrame = maxFrame;
+    %else 
+        %h=imlook3d(LocalMaxStack);
+        %disp('Find frame to use as reference frame');
+        %uiwait(h);close all
+        %dlgAnswer = inputdlg('Enter the frame number you want to use');
+     %   maxFrame = LocalMaxStack(:,:,str2double(dlgAnswer{1}));
+      %  maxFrameNum = LocalMax_locs(str2double(dlgAnswer{1}));
+    %end   
 
     maxFrame = padarray(maxFrame,[100 100],mean(maxFrame(:)));
 
     %imshow(maxFrame,[]);
     %answer = inputdlg('How many nmjs?');
-    nNmjs = 1%str2num(answer{1});
+    nNmjs = 1;%str2num(answer{1});
     close all
     for nNmjNum = 1:nNmjs
         BW = roipoly(maxFrame.*((2^16)/max(maxFrame(:))));
