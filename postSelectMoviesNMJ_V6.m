@@ -101,5 +101,5 @@ for movieNum=1:nMovies;
 
 cd(mov_to_reg_dir)
 
-save('trial_num1')
+save('trial_num1','timesavedemon','timedemon','timesaveaffine','timeaffine','timetotrack','timetosavetrack')
 end
