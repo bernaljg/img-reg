@@ -56,7 +56,7 @@ for movieNum=1:nMovies;
     load(roiFiles(movieNum).name);
 
     % Loads all tracked nmjs for this movie into array
-    trackedMovie = load_tracked_nmjs(nNmjs,trackedFileNames);
+    trackedMovie = load_nmjs(nNmjs,trackedFileNames);
     
     tic
     % Finds affine transform for all nmjs in this movie
@@ -87,7 +87,7 @@ for movieNum=1:nMovies;
     load(roiFiles(movieNum).name);
 
     % Loads affined nmj movies into array
-    affinedMovie = load_affined_nmjs(nNmjs,affinedFileNames);
+    affinedMovie = load_nmjs(nNmjs,affinedFileNames);
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie

@@ -2,44 +2,46 @@
 % 03/17/2016
 
 
-function [] = save_affine_mov(affineTransforms,tracked_nmjs,trackedFileNames,maxFrameNum,nFrames,nNmjs)
+function [] = save_affineMov_mov(affineTransforms,trackedMov,trackedFileNames,maxFrameNum,nFrames,nNmjs)
 
     for nmjNum = 1:nNmjs
-        tfAffine = affineTransforms{nmjNum,1};
-        tracked_nmj = tracked_nmjs{nmjNum,1};
-        Rfixed = imref2d(size(tracked_nmj(:,:,maxFrameNum)));
-        affine = zeros(size(tracked_nmj),'uint16');
+        tfAffine = affineMovTransforms{nmjNum,1};
+        trackedNmjMov = trackedMov{nmjNum,1};
+        Rfixed = imref2d(size(trackedNmjMov(:,:,maxFrameNum)));
+        affineMov = zeros(size(trackedNmjMov),'uint16');
 	
-	[t1s,t2s,s1s,s2s,sh1s,sh2s] = smooth_affine(tfAffine,nFrames)
+	[t1s,t2s,s1s,s2s,sh1s,sh2s] = smooth_affineMov(tfAffine,nFrames)
 
         for tNum = 1:nFrames 
-            thisTform = affine2d([s1s(tNum) sh1s(tNum) 0;sh2s(tNum) s2s(tNum) 0;t1s(tNum) t2s(tNum) 1]);
+            thisTform = affineMov2d([s1s(tNum) sh1s(tNum) 0;sh2s(tNum) s2s(tNum) 0;t1s(tNum) t2s(tNum) 1]);
             tformDets(tNum,1) = det(thisTform.T);
             tfAffineSmoothed{tNum,1} = thisTform;
-            frame2register = tracked_nmj(:,:,tNum);
+            frame2register = trackedNmjMov(:,:,tNum);
             [movingRegisteredAffine,~] = imwarp(frame2register,thisTform,'OutputView',Rfixed);
-            affine(:,:,tNum) = movingRegisteredAffine;
+            affineMov(:,:,tNum) = movingRegisteredAffine;
         end
+
+	nmjMovie = affineMov
            
         checkEveryXFrames = 40; % needs to be multiple of nFrames
-        checkAffineRegistration = zeros(size(affine,1),size(affine,2),nFrames/checkEveryXFrames,'uint16');
+        checkAffineRegistration = zeros(size(affineMov,1),size(affine,2),nFrames/checkEveryXFrames,'uint16');
         cntr = 1;
 
 	for checkFrameNum = 1:checkEveryXFrames:nFrames      
-        	checkAffineRegistration(:,:,cntr) = imadjust(affine(:,:,checkFrameNum));
+        	checkAffineRegistration(:,:,cntr) = imadjust(affineMov(:,:,checkFrameNum));
         	cntr = cntr+1;
         end
         clear cntr
-         disp(['Finished Affine NMJ #: ',num2str(nmjNum)]);   
+        disp(['Finished Affine NMJ #: ',num2str(nmjNum)]);   
 
         FileNameApp = trackedFileNames(nmjNum).name;
-        save(FileNameApp,'tfAffine','tfAffineSmoothed','affine','checkAffineRegistration','-append')
-        clear affine tfAffine tfAffineSmoothed checkAffineRegistration
+        save(FileNameApp,'tfAffine','tfAffineSmoothed','affineMov','nmjMovie','checkAffineRegistration','-append')
+        clear affineMov tfAffine tfAffineSmoothed checkAffineRegistration
     end       
     
 end
 
-function [t1s,t2s,s1s,s2s,sh1s,sh2s] = smooth_affine(tfAffine,nFrames)
+function [t1s,t2s,s1s,s2s,sh1s,sh2s] = smooth_affineMov(tfAffine,nFrames)
 
 for tfNum = 1:nFrames
 t1(tfNum,1) = tfAffine{tfNum}.T(3,1);
