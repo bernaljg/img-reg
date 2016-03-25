@@ -91,7 +91,7 @@ for movieNum=1:nMovies;
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
-    [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,affined_nmjs);
+    [demonized_mov, disp_fields,timetogpu] = apply_demon_transf(roiFiles,movieNum,affined_nmjs);
     timedemon = toc
     
     tic
@@ -101,5 +101,5 @@ for movieNum=1:nMovies;
 
 cd(mov_to_reg_dir)
 
-save('trial_num1')
+save('trial_num1','timetogpu','timesavedemon','timedemon','timesaveaffine','timeaffine','timetotrack','timetosavetrack')
 end

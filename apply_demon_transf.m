@@ -1,15 +1,15 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,affined_nmjs)
+function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(roiFiles,movieNum,affined_nmjs)
 
     vars = load(roiFiles(movieNum).name)
     nNmjs = vars.nNmjs
     nFrames = vars.nFrames;
     maxFrameNum = vars.maxFrameNum;
     
-	demonized_mov = cell(nNmjs,1);
-	disp_fields = cell(nNmjs,1);
+	demonized_mov_gpu = cell(nNmjs,1);
+	disp_fields_gpu = cell(nNmjs,1);
 
     for nmjNum = 1:nNmjs   
 	    affined_nmj = affined_nmjs{nmjNum};
@@ -26,9 +26,13 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 		    movingFrame=enhanceContrast(frameNorm);
 		    
 		    %Pass Arrays to GPU
+		    tic
 		    movingFrameGPU = gpuArray(movingFrame);
 		    refFrameGPU = gpuArray(refFrame);
-		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrame,refFrame,[400 200 100],...
+		    time_to_gpu = toc
+		    
+		    %Apply Demons Transformation
+		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrameGPU,refFrameGPU,[400 200 100],...
 		    'PyramidLevels',3,'AccumulatedFieldSmoothing',1);
 
 		    demonDispFields{qq,1}=dFieldGPU;
@@ -37,7 +41,7 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 	  
 		end
 		
-		demonized_mov{nmjNum,1}=demon;
-		disp_fields{nmjNum,1}=demonDispFields;     
+		demonized_mov_gpu{nmjNum,1}=demon;
+		disp_fields_gpu{nmjNum,1}=demonDispFields;     
 	end
 
