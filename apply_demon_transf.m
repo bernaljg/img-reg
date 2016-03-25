@@ -20,7 +20,7 @@ function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(
 
 		demonDispFields = cell(nFrames,1);
 		demon=zeros(size(refFrame,1),size(refFrame,2),nFrames,'uint16');
-		demonDispFieldsGPU = gpuArray(demonDispFields);
+		%demonDispFieldsGPU = gpuArray(demonDispFields);
 		demonGPU = gpuArray(demon);
 
 		for qq = 1:nFrames
@@ -37,7 +37,7 @@ function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(
 		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrameGPU,refFrameGPU,[400 200 100],...
 		    'PyramidLevels',3,'AccumulatedFieldSmoothing',1);
 
-		    demonDispFieldsGPU{qq,1}=dFieldGPU;
+		    demonDispFields{qq,1}=dFieldGPU;
 		    demonGPU(:,:,qq)=(movingRegGPU);
 		    disp(['NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 	  
