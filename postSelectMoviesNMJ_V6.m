@@ -91,9 +91,11 @@ for movieNum=1:nMovies;
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
-    [demonized_mov, disp_fields,timetogpu] = apply_demon_transf(roiFiles,movieNum,affined_nmjs);
+    [demonized_mov_gpu, disp_fields_gpu,timetogpu] = apply_demon_transf(roiFiles,movieNum,affined_nmjs);
     timedemon = toc
     
+    demonized_mov = gather(demonized_mov_gpu)
+    disp_fields = gather(disp_fields_gpu)
     tic
     % Saves demonized nmj movies for this movie
     save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
