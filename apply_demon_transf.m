@@ -7,9 +7,9 @@ function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(
     nNmjs = vars.nNmjs
     nFrames = vars.nFrames;
     maxFrameNum = vars.maxFrameNum;
-    
-	demonized_mov_gpu = cell(nNmjs,1);
-	disp_fields_gpu = cell(nNmjs,1);
+
+    demonized_mov_gpu = cell(nNmjs,1);
+    disp_fields_gpu = cell(nNmjs,1);
 
     for nmjNum = 1:nNmjs   
 	    affined_nmj = affined_nmjs{nmjNum};
@@ -31,7 +31,7 @@ function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(
 		    tic
 		    movingFrameGPU = gpuArray(movingFrame);
 		    refFrameGPU = gpuArray(refFrame);
-		    time_to_gpu = toc
+		    time_to_gpu = time_to_gpu + toc;
 		    
 		    %Apply Demons Transformation
 		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrameGPU,refFrameGPU,[400 200 100],...
