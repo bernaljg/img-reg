@@ -16,20 +16,22 @@ function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,F
         tcoord2s = round(smooth(tcoord2,trackSmoothFact));
         trackingCoordsSmoothed = [tcoord1s tcoord2s trackingCoords(:,3) trackingCoords(:,4)];
         
-	clear tracked_mov
+	clear trackedMov
                
-        tracked_mov = zeros(trackingCoordsSmoothed(1,4)+1,trackingCoordsSmoothed(1,3)+1,nFrames,'uint16');
+        trackedMov = zeros(trackingCoordsSmoothed(1,4)+1,trackingCoordsSmoothed(1,3)+1,nFrames,'uint16');
 
         for qq = 1:nFrames
             thisFrame = bfGetPlane(reader, qq);
             thisFramePadded = padarray(thisFrame,[100 100],mean(thisFrame(:)));
 
-            track(:,:,qq)=(thisFramePadded(trackingCoordsSmoothed(qq,2):trackingCoordsSmoothed(qq,2)+trackingCoordsSmoothed(qq,4),trackingCoordsSmoothed(qq,1):trackingCoordsSmoothed(qq,1)+trackingCoordsSmoothed(qq,3)));
+            trackedMov(:,:,qq)=(thisFramePadded(trackingCoordsSmoothed(qq,2):trackingCoordsSmoothed(qq,2)+trackingCoordsSmoothed(qq,4),trackingCoordsSmoothed(qq,1):trackingCoordsSmoothed(qq,1)+trackingCoordsSmoothed(qq,3)));
         end
-        
+       	
+       	nmjMovie = trackedMov;
+
         thisfilename = strcat(FileNameApp,'_registerNMJ','_',num2str(nmjNum),'.mat');
-        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','tracked_mov','maxFrameNum','-v7.3')
+        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','trackedMov','nmjMovie','maxFrameNum','-v7.3');
         
-	clear tracked_mov trackingCoordsSmoothed trackingCoords
+	clear trackedMov trackingCoordsSmoothed trackingCoords
 
     end
