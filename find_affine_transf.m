@@ -4,9 +4,9 @@
 function [affineTransforms] = find_affine_transf(roiFiles,movieNum, tracked_nmjs)
 
     vars = load(roiFiles(movieNum).name)
-    nNmjs = vars.nNmjs
-    nFrames = vars.nFrames
-    maxFrameNum = vars.maxFrameNum
+    nNmjs = vars.nNmjs;
+    nFrames = vars.nFrames;
+    maxFrameNum = vars.maxFrameNum;
 
     affineTransforms = cell(nNmjs,1);
 
