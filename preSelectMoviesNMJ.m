@@ -17,7 +17,7 @@ if iscell(fileNames)
     nummovies=1;
     end
 
-nFrames=2000; 
+nFrames=200; 
 for movnum = 1:nummovies
     if iscell(fileNames)
             thisFile = fileNames{movnum};
@@ -70,10 +70,10 @@ for movnum = 1:nummovies
     load(preSelectFiles(movnum).name)
     thisFile = preSelectFiles(movnum).name;
 
-    %imshow(maxFrame,[])
-    %button = questdlg('Is this a good reference frame?');
+    imshow(maxFrame,[])
+    button = questdlg('Is this a good reference frame?');
     close all
-    if true %strcmp(button,'Yes');
+    if strcmp(button,'Yes');
         maxFrame = maxFrame;
     else 
         h=imlook3d(LocalMaxStack);
@@ -86,9 +86,9 @@ for movnum = 1:nummovies
 
     maxFrame = padarray(maxFrame,[100 100],mean(maxFrame(:)));
 
-    %imshow(maxFrame,[]);
-    %answer = inputdlg('How many nmjs?');
-    nNmjs = 1%str2num(answer{1});
+    imshow(maxFrame,[]);
+    answer = inputdlg('How many nmjs?');
+    nNmjs = str2num(answer{1});
     close all
     for nNmjNum = 1:nNmjs
         BW = roipoly(maxFrame.*((2^16)/max(maxFrame(:))));

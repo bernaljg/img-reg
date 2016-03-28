@@ -4,11 +4,16 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 2000;
+nFrames = 200;
 
+skipTrack = false
+skipAffine = false
+skipDemon = false
 
 %%% Tracks and Crops NMJs from Movies
-
+if skipTrack == true
+    disp('Skipping NMJ Tracking')
+else
 for movieNum=1:nMovies;
 
 
@@ -38,10 +43,12 @@ for movieNum=1:nMovies;
     save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp,nNmjs)
     savingTrackTime = toc
 end
-
+end
 
 %%% Applies Affine Transformations on NMJs for all Movies
- 
+if skipAffine == true
+    disp('Skipping Affine Registration')
+else
 for movieNum=1:nMovies;
 
     % Gets movie filenames
@@ -54,7 +61,6 @@ for movieNum=1:nMovies;
     
     % Loads variables
     load(roiFiles(movieNum).name);
-
     % Loads all tracked nmjs for this movie into array
     trackedMovie = load_nmjs(nNmjs,trackedFileNames);
     
@@ -69,10 +75,12 @@ for movieNum=1:nMovies;
     savingAffineTime = toc
 
 end
-
+end
 
 %%% Applies Demon Transformations on NMJs for all Movies
-
+if skipDemon == true
+    disp('Skipping Demon Registation')
+else
 for movieNum=1:nMovies;
 
     % Get movie filenames
@@ -98,8 +106,8 @@ for movieNum=1:nMovies;
     % Saves demonized nmj movies for this movie
     save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
     savingDemonTime = toc
-
+end
+end
 cd(moviesToRegisterDir)
 
 save('trial_num1','gpuConversionTime','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
-end

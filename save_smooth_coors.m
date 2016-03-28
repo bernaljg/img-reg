@@ -24,13 +24,13 @@ function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,F
             thisFrame = bfGetPlane(reader, qq);
             thisFramePadded = padarray(thisFrame,[100 100],mean(thisFrame(:)));
 
-            track(:,:,qq)=(thisFramePadded(trackingCoordsSmoothed(qq,2):trackingCoordsSmoothed(qq,2)+trackingCoordsSmoothed(qq,4),trackingCoordsSmoothed(qq,1):trackingCoordsSmoothed(qq,1)+trackingCoordsSmoothed(qq,3)));
+            trackedMov(:,:,qq)=(thisFramePadded(trackingCoordsSmoothed(qq,2):trackingCoordsSmoothed(qq,2)+trackingCoordsSmoothed(qq,4),trackingCoordsSmoothed(qq,1):trackingCoordsSmoothed(qq,1)+trackingCoordsSmoothed(qq,3)));
         end
        	
-       	nmjMovie = trackedMov
+       	nmjMovie = trackedMov;
 
         thisfilename = strcat(FileNameApp,'_registerNMJ','_',num2str(nmjNum),'.mat');
-        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','trackedMov','nmjMovie','maxFrameNum','-v7.3')
+        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','trackedMov','nmjMovie','maxFrameNum','-v7.3');
         
 	clear trackedMov trackingCoordsSmoothed trackingCoords
 
