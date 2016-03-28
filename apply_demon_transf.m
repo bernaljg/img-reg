@@ -22,6 +22,8 @@ function [demonized_mov_gpu, disp_fields_gpu, time_to_gpu] = apply_demon_transf(
 		demon=zeros(size(refFrame,1),size(refFrame,2),nFrames,'uint16');
 		%demonDispFieldsGPU = gpuArray(demonDispFields);
 		demonGPU = gpuArray(demon);
+		
+		time_to_gpu = 0
 
 		for qq = 1:nFrames
 		    frameNorm = affined_nmj(:,:,qq);
