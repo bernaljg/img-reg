@@ -106,6 +106,7 @@ for movieNum=1:nMovies;
     % Saves demonized nmj movies for this movie
     save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
     savingDemonTime = toc
+
 end
 end
 cd(moviesToRegisterDir)
