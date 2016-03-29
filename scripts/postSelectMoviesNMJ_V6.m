@@ -111,4 +111,4 @@ end
 end
 cd(moviesToRegisterDir)
 
-save('trial_num1','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
+save('Orig_trial_2000','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')

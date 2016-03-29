@@ -9,7 +9,7 @@ disp('Choose folder containing czi movies');
 try
 mov_to_reg_dir = uigetdir;
 catch
-mov_to_reg_dir = pwd
+mov_to_reg_dir = strcat(pwd,'/data')
 end
 
 disp('Choose folder to save registered movies');
@@ -17,5 +17,5 @@ disp('Choose folder to save registered movies');
 try
 output_dir = uigetdir;
 catch
-output_dir = pwd
+output_dir = strcat(pwd,'/output')
 end
