@@ -4,11 +4,11 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 200;
+nFrames = 2000;
 
-skipTrack = false
-skipAffine = false
-skipDemon = false
+skipTrack = false;
+skipAffine = true;
+skipDemon = true;
 
 %%% Tracks and Crops NMJs from Movies
 if skipTrack == true
@@ -48,6 +48,8 @@ end
 %%% Applies Affine Transformations on NMJs for all Movies
 if skipAffine == true
     disp('Skipping Affine Registration')
+    affineTime = 0
+    savingAffineTime = 0
 else
 for movieNum=1:nMovies;
 
@@ -80,6 +82,8 @@ end
 %%% Applies Demon Transformations on NMJs for all Movies
 if skipDemon == true
     disp('Skipping Demon Registation')
+    demonTime = 0
+    savingDemonTime = 0
 else
 for movieNum=1:nMovies;
 
@@ -113,4 +117,4 @@ end
 end
 cd(moviesToRegisterDir)
 
-save('GPU_trial1','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
+save('GPUTracking_2000Frames','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
