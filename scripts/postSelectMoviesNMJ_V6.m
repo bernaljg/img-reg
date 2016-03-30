@@ -4,15 +4,17 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 2000;
+nFrames = 200;
 
-skipTrack = false;
+skipTrack = true;
 skipAffine = true;
-skipDemon = true;
+skipDemon = false;
 
 %%% Tracks and Crops NMJs from Movies
 if skipTrack == true
     disp('Skipping NMJ Tracking')
+    trackingTime = 0
+    savingTrackTime = 0
 else
 for movieNum=1:nMovies;
 
@@ -97,13 +99,13 @@ for movieNum=1:nMovies;
     
     % Loads variables
     load(roiFiles(movieNum).name);
-
+    nFrames = 200
     % Loads affined nmj movies into array
-    affinedMovie = load_nmjs(nNmjs,affinedFileNames);
+    nmjMovie = load_nmjs(nNmjs,affinedFileNames);
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
-    [demonized_mov_gpu, disp_fields_gpu] = apply_demon_transf(roiFiles,movieNum,affinedMovie);
+    [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFiles,movieNum,nmjMovie);
     demonTime = toc
     
     demonized_mov = gather(demonized_mov_gpu)
