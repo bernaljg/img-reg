@@ -4,9 +4,9 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 200;
+nFrames = 2000;
 
-skipTrack = true;
+skipTrack = false;
 skipAffine = true;
 skipDemon = false;
 
@@ -99,7 +99,7 @@ for movieNum=1:nMovies;
     
     % Loads variables
     load(roiFiles(movieNum).name);
-    nFrames = 200
+    
     % Loads affined nmj movies into array
     nmjMovie = load_nmjs(nNmjs,affinedFileNames);
 
@@ -108,8 +108,8 @@ for movieNum=1:nMovies;
     [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFiles,movieNum,nmjMovie);
     demonTime = toc
     
-    demonized_mov = gather(demonized_mov_gpu)
-    disp_fields = gather(disp_fields_gpu)
+    demonized_mov = gather(demonized_mov_gpu);
+    disp_fields = gather(disp_fields_gpu);
     tic
     % Saves demonized nmj movies for this movie
     save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
