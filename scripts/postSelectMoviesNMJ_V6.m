@@ -4,15 +4,17 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 200;
+nFrames = 2000;
 
-skipTrack = false
-skipAffine = false
+skipTrack = true
+skipAffine = true
 skipDemon = false
 
 %%% Tracks and Crops NMJs from Movies
 if skipTrack == true
     disp('Skipping NMJ Tracking')
+    trackingTime = 0
+    savingTrackTime = 0
 else
 for movieNum=1:nMovies;
 
@@ -48,6 +50,8 @@ end
 %%% Applies Affine Transformations on NMJs for all Movies
 if skipAffine == true
     disp('Skipping Affine Registration')
+    affineTime = 0
+    savingAffineTime = 0
 else
 for movieNum=1:nMovies;
 
