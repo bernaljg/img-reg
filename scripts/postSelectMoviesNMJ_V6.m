@@ -4,7 +4,7 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 2000;
+nFrames = 200;
 
 skipTrack = true
 skipAffine = true
@@ -97,7 +97,7 @@ for movieNum=1:nMovies;
     
     % Loads variables
     load(roiFiles(movieNum).name);
-
+    nFrames = 200
     % Loads affined nmj movies into array
     affinedMovie = load_nmjs(nNmjs,affinedFileNames);
 

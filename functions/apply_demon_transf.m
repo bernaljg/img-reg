@@ -5,7 +5,7 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 
     vars = load(roiFiles(movieNum).name)
     nNmjs = vars.nNmjs
-    nFrames = vars.nFrames;
+    nFrames = 200 %vars.nFrames;
     maxFrameNum = vars.maxFrameNum;
     
 	demonized_mov = cell(nNmjs,1);
@@ -25,10 +25,10 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 		    frameNorm = affined_nmj(:,:,qq);
 		    movingFrame=enhanceContrast(frameNorm);
 		    
-		    [dField,~] = imregdemons(movingFrame,refFrame,[400 200 100],...
+		    [dField,movingRegistered] = imregdemons(movingFrame,refFrame,[400 200 100],...
 		    'PyramidLevels',3,'AccumulatedFieldSmoothing',1);
 
-		    movingRegistered = imwarp(frameNorm,dField);  
+		    %movingRegistered = imwarp(frameNorm,dField);  
 		    
 		    demonDispFields{qq,1}=dField;
 		    demon(:,:,qq)=(movingRegistered);
