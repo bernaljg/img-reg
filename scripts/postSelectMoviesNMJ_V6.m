@@ -7,7 +7,7 @@ clear all; close all;
 nFrames = 2000;
 
 skipTrack = false;
-skipAffine = true;
+skipAffine = false;
 skipDemon = false;
 
 %%% Tracks and Crops NMJs from Movies
@@ -119,4 +119,4 @@ end
 end
 cd(moviesToRegisterDir)
 
-save('GPUTracking_2000Frames','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
+save('GPU Tracking and Demons_2000Frames','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
