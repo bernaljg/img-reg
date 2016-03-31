@@ -33,10 +33,10 @@ function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFiles,movi
 		    
 		    %Apply Demons Transformation
 		    [dFieldGPU,~] = imregdemons(movingFrameGPU,refFrameGPU,[400,200,100]);
-      
-            demonDispFields{qq,1}=gather(dFieldGPU);
-            movingRegGPU = imwarp(frameNorm,dFieldGPU);
+      		    dFieldGPU = gather(dFieldGPU);
+		    movingRegGPU = imwarp(frameNorm,dFieldGPU);
             
+            	    demonDispFields{qq,1} = dFieldGPU 
 		    demonGPU(:,:,qq)=(movingRegGPU);
 		    disp(['NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 	  

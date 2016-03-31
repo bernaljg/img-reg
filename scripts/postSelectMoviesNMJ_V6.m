@@ -7,7 +7,7 @@ clear all; close all;
 nFrames = 2000;
 
 skipTrack = false;
-skipAffine = false;
+skipAffine = true;
 skipDemon = false;
 
 %%% Tracks and Crops NMJs from Movies
