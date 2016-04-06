@@ -34,8 +34,8 @@ function [] = save_affine_mov(affineTransforms,trackedMov,trackedFileNames,maxFr
         clear cntr
         disp(['Finished Affine NMJ #: ',num2str(nmjNum)]);   
 
-        FileNameApp = trackedFileNames(nmjNum).name;
-        save(FileNameApp,'tfAffine','tfAffineSmoothed','affineMov','nmjMovie','checkAffineRegistration','-append')
+        FileNameApp = strcat('affine_',trackedFileNames(nmjNum).name);
+        save(FileNameApp,'tfAffine','tfAffineSmoothed','affine','nmjMovie','checkAffineRegistration')
         clear affineMov tfAffine tfAffineSmoothed checkAffineRegistration
     end       
     

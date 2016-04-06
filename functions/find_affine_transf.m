@@ -36,7 +36,6 @@ function [affineTransforms] = find_affine_transf(roiFiles,movieNum, tracked_nmjs
         scaleThresh = 0.45;
         distTreshX = round(size(refFrame,2)/3);
         distTreshY = round(size(refFrame,1)/3);
-	
 	% Forward Affine Transformation
         for qq =maxFrameNum+1:nFrames    
         

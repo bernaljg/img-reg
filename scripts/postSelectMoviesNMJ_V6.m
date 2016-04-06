@@ -6,7 +6,7 @@ clear all; close all;
 
 nFrames = 2000;
 
-skipTrack = false;
+skipTrack = true;
 skipAffine = true;
 skipDemon = false;
 
@@ -34,10 +34,10 @@ for movieNum=1:nMovies;
 
     % Makes output folder
     cd(outputDir)
-    FileNameApp = FileName;
-    FileNameApp(end-3:end)=[];
-    mkdir(FileNameApp);
-    cd(FileNameApp);
+    FileNameApp = FileName
+    FileNameApp(end-3:end)=[]
+    mkdir(FileNameApp)
+    cd(FileNameApp)
     copyfile([moviesToRegisterDir '/' roiFiles(movieNum).name],cd)
     
     tic
@@ -47,6 +47,8 @@ for movieNum=1:nMovies;
 end
 end
 
+
+    
 %%% Applies Affine Transformations on NMJs for all Movies
 if skipAffine == true
     disp('Skipping Affine Registration')
@@ -57,11 +59,11 @@ for movieNum=1:nMovies;
 
     % Gets movie filenames
     cd(outputDir)
-    FileName = cziFiles(movieNum).name;
-    FileNameApp = FileName;
-    FileNameApp(end-3:end)=[];
+    FileName = cziFiles(movieNum).name
+    FileNameApp = FileName
+    FileNameApp(end-3:end)=[]
     cd(FileNameApp)
-    trackedFileNames = dir('*register*.mat');
+    trackedFileNames = dir('*register*.mat')
     
     % Loads variables
     load(roiFiles(movieNum).name);
@@ -88,20 +90,20 @@ if skipDemon == true
     savingDemonTime = 0
 else
 for movieNum=1:nMovies;
-
-    % Get movie filenames
-    cd(outputDir)
-    FileName = cziFiles(movieNum).name;
-    FileNameApp = FileName;
-    FileNameApp(end-3:end)=[];
-    cd(FileNameApp)
-    affinedFileNames = dir('*register*.mat');
     
+    % Gets movie filenames
+    cd(outputDir)
+    FileName = cziFiles(movieNum).name
+    FileNameApp = FileName
+    FileNameApp(end-3:end)=[]
+    cd(FileNameApp)
+    trackedFileNames = dir('*register*.mat')
+
     % Loads variables
     load(roiFiles(movieNum).name);
     
     % Loads affined nmj movies into array
-    nmjMovie = load_nmjs(nNmjs,affinedFileNames);
+    nmjMovie = load_nmjs(nNmjs,trackedFileNames);
 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
@@ -112,11 +114,11 @@ for movieNum=1:nMovies;
     disp_fields = gather(disp_fields_gpu);
     tic
     % Saves demonized nmj movies for this movie
-    save_demon_mov(demonized_mov,disp_fields,affinedFileNames,nNmjs);
+    save_demon_mov(demonized_mov,disp_fields,trackedFileNames,nNmjs);
     savingDemonTime = toc
 
 end
 end
 cd(moviesToRegisterDir)
 
-save('GPU Tracking and Demons_2000Frames','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
+save('GPU Demons and Tracking No Affine wo Enhanced Contrast 5pyr 200 200 1 1 1','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
