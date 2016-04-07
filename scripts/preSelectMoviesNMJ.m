@@ -17,7 +17,7 @@ if iscell(fileNames)
     nummovies=1;
     end
 
-nFrames=2000; 
+nFrames=1000; 
 for movnum = 1:nummovies
     if iscell(fileNames)
             thisFile = fileNames{movnum};

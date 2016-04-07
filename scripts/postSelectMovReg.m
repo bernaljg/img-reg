@@ -4,65 +4,51 @@ clear all; close all;
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
 
-nFrames = 2000;
+nFrames = 1000;
 
-skipTrack = true;
-skipAffine = true;
-skipDemon = false;
+for movieNum=1:nMovies;
+%try    
+% Loads variables
+cd(moviesToRegisterDir)
+load(roiFiles(movieNum).name)
+cziFileName = cziFiles(movieNum).name;    
+
+% Makes output folder
+FileName = cziFileName
+FileName(end-3:end)=[]
+movOutputDir = [outputDir '/' FileName]
+mkdir(movOutputDir)
+copyfile([moviesToRegisterDir '/' roiFiles(movieNum).name],movOutputDir)
+save('Timing Log')
 
 %%% Tracks and Crops NMJs from Movies
-if skipTrack == true
+if exist('skipTrack')
     disp('Skipping NMJ Tracking')
-    trackingTime = 0
-    savingTrackTime = 0
 else
-for movieNum=1:nMovies;
-
-
-    % Loads variables
-    cd(moviesToRegisterDir)
-    load(roiFiles(movieNum).name)
-    FileName = cziFiles(movieNum).name;    
-
     % Loads the reader using bftools       
-    reader = bfGetReader(FileName);
+    reader = bfGetReader(cziFileName);
     
     tic
     % Calculates tracking coordinates for all nmjs 
     trackingCoordinates = find_tracking_coor(reader,regPropsStore,maxFrame,maxFrameNum,nFrames,nNmjs)
     trackingTime = toc
-
-    % Makes output folder
-    cd(outputDir)
-    FileNameApp = FileName
-    FileNameApp(end-3:end)=[]
-    mkdir(FileNameApp)
-    cd(FileNameApp)
-    copyfile([moviesToRegisterDir '/' roiFiles(movieNum).name],cd)
     
     tic
     % Saves smoothed movies for all nmjs in seperate folders
-    save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp,nNmjs)
+    save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileName,nNmjs)
     savingTrackTime = toc
+    save('Timing Log','trackingTime','savingTrackTime','-append')
 end
-end
-
-
     
 %%% Applies Affine Transformations on NMJs for all Movies
-if skipAffine == true
+if exist('skipAffine')
     disp('Skipping Affine Registration')
-    affineTime = 0
-    savingAffineTime = 0
+    skipAffine = true
 else
-for movieNum=1:nMovies;
-
+    skipAffine = false
     % Gets movie filenames
     cd(outputDir)
-    FileName = cziFiles(movieNum).name
-    FileNameApp = FileName
-    FileNameApp(end-3:end)=[]
-    cd(FileNameApp)
+    cd(FileName)
     trackedFileNames = dir('*register*.mat')
     
     % Loads variables
@@ -79,24 +65,19 @@ for movieNum=1:nMovies;
     % Applies affine transformation and saves movies for all nmjs in this movie 
     save_affine_mov(affineTransforms,trackedMovie,trackedFileNames,maxFrameNum,nFrames,nNmjs);
     savingAffineTime = toc
-
-end
+    save('Timing Log','affineTime','savingAffineTime','-append')
 end
 
 %%% Applies Demon Transformations on NMJs for all Movies
-if skipDemon == true
+if exist('skipDemon')
     disp('Skipping Demon Registation')
     demonTime = 0
     savingDemonTime = 0
+    skipDemon = true;
 else
-for movieNum=1:nMovies;
-    
-    % Gets movie filenames
+    % Gets movie filename
     cd(outputDir)
-    FileName = cziFiles(movieNum).name
-    FileNameApp = FileName
-    FileNameApp(end-3:end)=[]
-    cd(FileNameApp)
+    cd(FileName)
     trackedFileNames = dir('*register*.mat')
 
     % Loads variables
@@ -114,11 +95,14 @@ for movieNum=1:nMovies;
     disp_fields = gather(disp_fields_gpu);
     tic
     % Saves demonized nmj movies for this movie
-    save_demon_mov(demonized_mov,disp_fields,trackedFileNames,nNmjs);
+    save_demon_mov(demonized_mov,disp_fields,trackedFileNames,nNmjs,skipAffine);
     savingDemonTime = toc
+    
+    save('Timing Log','demonTime','savingDemonTime','-append')
 
 end
+%catch
+%end
 end
+
 cd(moviesToRegisterDir)
-
-save('GPU Demons and Tracking No Affine wo Enhanced Contrast 5pyr 200 200 1 1 1','savingDemonTime','demonTime','savingAffineTime','affineTime','trackingTime','savingTrackTime')
