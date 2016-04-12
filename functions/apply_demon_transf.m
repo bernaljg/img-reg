@@ -1,9 +1,9 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFiles,movieNum,nmjs)
+function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFile,nmjs)
 
-    vars = load(roiFiles(movieNum).name);
+    vars = load(roiFile);
     nNmjs = vars.nNmjs;
     nFrames = vars.nFrames;
     maxFrameNum = vars.maxFrameNum;

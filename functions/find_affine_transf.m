@@ -1,9 +1,9 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [affineTransforms] = find_affine_transf(roiFiles,movieNum, tracked_nmjs)
+function [affineTransforms] = find_affine_transf(roiFile,tracked_nmjs)
 
-    vars = load(roiFiles(movieNum).name)
+    vars = load(roiFile)
     nNmjs = vars.nNmjs;
     nFrames = vars.nFrames;
     maxFrameNum = vars.maxFrameNum;

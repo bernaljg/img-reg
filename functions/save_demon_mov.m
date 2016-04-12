@@ -2,17 +2,27 @@
 % 03/17/2016
 
 
-function [] = save_demon_mov(demonized_mov,disp_fields,FileNames,nNmjs,skipAffine)
+function [] = save_demon_mov(demonized_mov,disp_fields,directory,FileNames,nNmjs,skipAffine)
 
 	for demonMovieNum = 1:nNmjs   
 	    demon=demonized_mov{demonMovieNum,1};
 	    demonDispFields=disp_fields{demonMovieNum,1};
+        
 	    if skipAffine
-		mkdir('demon')
-	    	FileNameApp = strcat('demon/', FileNames(demonMovieNum).name);
-    	 else
-	    	FileNameApp = FileNames(demonMovieNum).name;
-	    	save(FileNameApp,'demonDispFields','demon','-append')
+            demon_dir = fullfile(directory,'demon')
+            mkdir(demon_dir)
+	    	FileNameApp = fullfile(demon_dir, FileNames(demonMovieNum).name);
+            disp('Saving new file for demon and dfield')
+            save(FileNameApp,'demonDispFields','demon');
+        else
+            demon_affine_dir = fullfile(directory,'demon_affine')
+	    demon_affine = demon;
+            mkdir(demon_affine_dir)
+	    FileNameApp = fullfile(demon_affine_dir, FileNames(demonMovieNum).name);
+            disp('appending demon and dfield')
+            save(FileNameApp,'demonDispFields','demon_affine');
+	    end
+
+
+	clear demon demonDispFields
         end
-	    clear demon demonDispFields
-    end
