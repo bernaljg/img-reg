@@ -32,7 +32,7 @@ function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFile,nmjs)
 		    movingFrameGPU = gpuArray(movingFrame);
 		    
 		    %Apply Demons Transformation
-		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrameGPU,refFrameGPU,[200,200,1,1,1],'PyramidLevels',5);
+		    [dFieldGPU,movingRegGPU] = imregdemons(movingFrameGPU,refFrameGPU,[400,200,100],'PyramidLevels',3);
       		dFieldGPU = gather(dFieldGPU);
 		    movingRegGPU = imwarp(frameNorm,dFieldGPU);
             

@@ -8,7 +8,7 @@ else
 skipAffine = false
 end
 
-for movieNum=1:nMovies;
+for movieNum=1:1%nMovies;
 %try    
 % Loads variables
 fileName = fileNames{movieNum};
@@ -43,7 +43,7 @@ else
 end
     
 % Gets movie filenames    
-trackedFileNames = dir([movOutputDir '/track/*register*.mat']) %Makes structure objectwith attributes
+trackedFileNames = dir([movOutputDir '/track/*register*.mat']) %Makes structure object
 
 %%% Applies Affine Transformations on NMJs for all Movies
 if skipAffine
