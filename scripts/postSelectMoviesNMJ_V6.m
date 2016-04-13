@@ -3,7 +3,7 @@ clear all; close all;
 %%% Choose directories
 [moviesToRegisterDir,outputDir] = choose_dirs()
 [roiFiles,cziFiles,nMovies] = load_mov_names(moviesToRegisterDir)
-
+disp('test')
 nFrames = 200;
 
 skipTrack = true
