@@ -8,7 +8,7 @@ else
 skipAffine = false
 end
 
-for movieNum=1:nMovies;
+for movieNum=1:1%nMovies;
 %try    
 % Loads variables
 fileName = fileNames{movieNum};
