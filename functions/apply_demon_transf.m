@@ -16,7 +16,7 @@ function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFile,nmjs)
 		disp(['Starting Demon NMJ #: ',num2str(nmjNum)])
 
 		refFrameNorm = nmj(:,:,maxFrameNum);
-		refFrame = enhanceContrast(refFrameNorm);
+		refFrame = enhanceContrastDemon(refFrameNorm);
 		refFrameGPU = gpuArray(refFrame);
 
 		demonDispFields = cell(nFrames,1);
