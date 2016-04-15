@@ -25,7 +25,7 @@ function [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFile,nmjs)
 
 		for qq = 1:nFrames
 		    frameNorm = nmj(:,:,qq);
-		    movingFrame=enhanceContrast(frameNorm);
+		    movingFrame=enhanceContrastDemon(frameNorm);
 		    %frameNorm = gpuArray(frameNorm);
 
 		    %Pass Arrays to GPU
