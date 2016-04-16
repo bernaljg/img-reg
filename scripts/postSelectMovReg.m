@@ -77,18 +77,12 @@ else
     
     % Loads affined nmj movies into array 
     nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,skipAffine);
-
-    tic
-    % Finds and applies demon transformation onto affined nmjs in this movie
-    [disp_fields, demonized_mov] = cluster_demons_reg(roiFile,nmjMovie);
-    demonTime = toc
     
-    tic
-    % Saves demonized nmj movies for this movie
-    save_demon_mov(demonized_mov,disp_fields,movOutputDir, trackedFileNames,nNmjs,skipAffine);
-    savingDemonTime = toc
-    save([movOutputDir '/Demon Timing Log'],'demonTime','savingDemonTime') 
-
+    batchDir = save_batches(nmjMovie,movOutputDir,numOfNodes,nNmjs)
+    
+    parallel_demons(batchDir,roiFile,nmjs,numOfNodes)
+    
+end
 end
 end
 

@@ -1,22 +1,23 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [disp_fields, demonized_mov] = cluster_demons_reg(roiFile,nmjs)
+function [] = parallel_demon_reg(roiFile,batchFile)
 
-    vars = load(roiFile);
-    nNmjs = vars.nNmjs;
-    nFrames = vars.nFrames;
-    maxFrameNum = vars.maxFrameNum;
+    params = load(roiFile);
+    nNmjs = params.nNmjs;
+    nFrames = params.nFrames;
+
+    load(batchFile)
 
     demonized_mov = cell(nNmjs,1);
     disp_fields = cell(nNmjs,1);
 
     for nmjNum = 1:nNmjs   
-	nmj = nmjs{nmjNum};
+	nmj = batchNmjs{nmjNum};
 	disp(['Starting Demon NMJ #: ',num2str(nmjNum)])
-
-	refFrameNorm = nmj(:,:,maxFrameNum);
-	refFrame = enhanceContrastDemon(refFrameNorm);
+	
+	refFrame = refFrames{nmjNum}
+	refFrame = enhanceContrastDemon(refFrame);
 
 	demonDispFields = cell(nFrames,1);
 	demon=zeros(size(refFrame,1),size(refFrame,2),nFrames,'uint16');
@@ -36,5 +37,7 @@ function [disp_fields, demonized_mov] = cluster_demons_reg(roiFile,nmjs)
 	end
 		
 	disp_fields{nmjNum,1}=demonDispFields;     
-   end
+
+    save(batchFile,'demonized_mov','disp_fields','-append','-v7.3')
+    end
 
