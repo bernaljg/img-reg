@@ -80,7 +80,7 @@ else
     
     batchDir = save_batches(nmjMovie,movOutputDir,numOfNodes,nNmjs)
     
-    parallel_demons(batchDir,roiFile,nmjs,numOfNodes)
+    make_run_demons_bash(batchDir,roiFile,numOfNodes)
     
 end
 end
