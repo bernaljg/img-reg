@@ -13,14 +13,10 @@ function [tracking_coors] = find_tracking_coor(reader,roi_props,max_frame,max_fr
         
 
         bbox = find_bounding_box(roi_props,nmjNum);
-        bbox = gpuArray(bbox);
         
         refFrameCrop = crop_ref_frame(max_frame,bbox);
         
-        refFrameCrop = gpuArray(refFrameCrop);
-        
         trackingCoords=zeros(n_frames,4);
-        trackingCoords = gpuArray(trackingCoords);
         trackingCoords(max_frame_num,:) = bbox;
         
         minOverlap=numel(refFrameCrop)/1.2;
@@ -36,9 +32,8 @@ function [tracking_coors] = find_tracking_coor(reader,roi_props,max_frame,max_fr
 	    thisFrame = thisFramePadded(bbox(2):bbox(2)+bbox(4),bbox(1):bbox(1)+bbox(3));
 	    thisFrame=imadjust(thisFrame);
 	    thisFrame=enhanceContrastForAffine(thisFrame);
-        thisFrame = gpuArray(thisFrame);
         
-	    c = normxcorr2_general_gpu((thisFrame),(refFrameCrop),minOverlap);
+	    c = normxcorr2_general((thisFrame),(refFrameCrop),minOverlap);
                 
 	    [~, imax] = max(abs(c(:)));
 	    [ypeak, xpeak] = ind2sub(size(c),imax(1));
@@ -66,9 +61,8 @@ function [tracking_coors] = find_tracking_coor(reader,roi_props,max_frame,max_fr
 	    thisFrame = thisFramePadded(bbox(2):bbox(2)+bbox(4),bbox(1):bbox(1)+bbox(3));
 	    thisFrame=imadjust(thisFrame);
 	    thisFrame=enhanceContrastForAffine(thisFrame);
-        thisFrame = gpuArray(thisFrame);
         
-	    c = normxcorr2_general_gpu((thisFrame),(refFrameCrop),minOverlap);
+	    c = normxcorr2_general((thisFrame),(refFrameCrop),minOverlap);
 
 	    [~, imax] = max(abs(c(:)));
 	    [ypeak, xpeak] = ind2sub(size(c),imax(1));
@@ -82,7 +76,6 @@ function [tracking_coors] = find_tracking_coor(reader,roi_props,max_frame,max_fr
 
     	end
         
-    trackingCoords = gather(trackingCoords);
     tracking_coors{nmjNum,1} = trackingCoords;   
         
     end

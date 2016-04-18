@@ -1,22 +1,18 @@
-#!/bin/bash
+#!/bin/bash -l
 # Job name
-#SBATCH --job-name=Img_Reg
+#SBATCH -J Img_Reg
 #
 # Partition:
-#SBATCH --partition=cortex
+#SBATCH -p cortex
 #
 # Wall clock limit:
-#SBATCH --time=5:00:00
+#SBATCH --time=2:00:00
 #
 # Memory:
-#SBATCH --mem-per-cpu=15G
+#SBATCH --mem-per-cpu=600
 #
 # Constraint:
 #SBATCH --constraint=cortex_nogpu
-#
-# Output:
-#SBATCH --output=/clusterfs/cortex/users/bernaljg/LOGS/%j.out
+
 module load matlab/R2016a
-matlab -nodisplay
-postSelectMovReg;
-exit;
+matlab -nosplash -nodisplay -r postSelectMovReg; exit;

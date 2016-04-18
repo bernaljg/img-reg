@@ -84,6 +84,5 @@ else
     
 end
 end
-end
 
 disp('Success')

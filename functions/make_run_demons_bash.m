@@ -29,7 +29,7 @@ function [] = make_run_demons_bash(batchDir,roiFile,numOfNodes)
 		fprintf(fid,['#SBATCH --constraint=cortex_nogpu\n']);
 		fprintf(fid,['#\n']);
 		fprintf(fid,['# Processors:\n']);
-		fprintf(fid,['#SBATCH --ntasks=4\n']);
+		fprintf(fid,['#SBATCH --ntasks=1\n']);
 		
 		%fprintf(fid,['#\n']);
 		%fprintf(fid,['# Exclude the Following Nodes:\n']);
