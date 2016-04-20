@@ -9,10 +9,10 @@
 #SBATCH --time=2:00:00
 #
 # Memory:
-#SBATCH --mem-per-cpu=600
+#SBATCH --mem-per-cpu=5000
 #
 # Constraint:
 #SBATCH --constraint=cortex_nogpu
 
 module load matlab/R2016a
-matlab -nosplash -nodisplay -r postSelectMovReg; exit;
+matlab -nosplash -nodisplay -r "postSelectMovReg; exit;"

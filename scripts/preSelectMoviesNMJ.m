@@ -4,26 +4,15 @@
 clear; close all;
 
 % theseAreTheFilesYoureLookingFor = dir('*.czi');
-try
-fileNames = uigetfile('*.czi','Select Movies','MultiSelect', 'on');
-catch
-fileNames = dir('*.czi')
-fileNames = fileNames.name
-end
 
-if iscell(fileNames)
-    nummovies=size(fileNames,2);
-    else
-    nummovies=1;
-    end
+moviePath = [getenv('DATA_PATH'),'/img-reg/'];
+fileNames = dir([moviePath, '*.czi']);
+
+nummovies=size(fileNames,2)
 
 nFrames=1000; 
 for movnum = 1:nummovies
-    if iscell(fileNames)
-            thisFile = fileNames{movnum};
-    else
-                thisFile =fileNames;
-    end
+    thisFile = [moviePath, fileNames(movnum).name];
     
     % read movies (you need BF toolbox to read carl zeiss movies)
 
@@ -57,18 +46,17 @@ for movnum = 1:nummovies
     savethisFile = strcat(savethisFile,'_NMJ_PreSelect');
     
  save(savethisFile,'thisFile','listOfTotalVals','maxFrame','maxFrameNum','nFrames','MeanVal','SmoothedMaxVals','LocalMax_pks','LocalMax_locs','LocalMaxStack')
- clearvars -except fileNames movnum nummovies nFrames theseAreTheFilesYoureLookingFor
 
 close all    
 end
 
-preSelectFiles = dir('*PreSelect.mat');
+preSelectFiles = dir([moviePath,'*PreSelect.mat']);
 nummovies=size(preSelectFiles,1);
 
 for movnum = 1:nummovies
 
-    load(preSelectFiles(movnum).name)
-    thisFile = preSelectFiles(movnum).name;
+    load([moviePath,preSelectFiles(movnum).name])
+    thisFile = [moviePath, preSelectFiles(movnum).name];
 
     imshow(maxFrame,[])
     button = questdlg('Is this a good reference frame?');

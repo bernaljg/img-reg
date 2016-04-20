@@ -13,10 +13,13 @@ for movieNum=1:1%nMovies;
 % Loads variables
 fileName = fileNames{movieNum};
 roiFile = roiFullFiles{movieNum};
+
+%Change the Number of Frames for testing
+nFrames=1000
+save(roiFile,'nFrames','-append')
+
 cziFile = cziFullFiles{movieNum};
 load(roiFile);
-%usernFrames = 100;
-%nFrames = usernFrames;
 
 %Makes output folder
 movOutputDir = fullfile(outputDir,fileName);
@@ -74,14 +77,17 @@ if exist('skipDemon')
 else
     % Loads variables
     load(roiFile);
-    
+    numOfNodes = 4 
     % Loads affined nmj movies into array 
     nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,skipAffine);
     
-    batchDir = save_batches(nmjMovie,movOutputDir,numOfNodes,nNmjs)
+    batchDir = save_batches(roiFile, nmjMovie,movOutputDir,numOfNodes,nNmjs)
     
-    make_run_demons_bash(batchDir,roiFile,numOfNodes)
+    completedBatches = 0
+    save(roiFile,'completedBatches','-append') 
+    run_demons_bash(batchDir,roiFile,numOfNodes)
     
+    join_movies(batchDir,roiFile,movOutputDir,numOfNodes) 
 end
 end
 
