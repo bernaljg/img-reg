@@ -4,7 +4,7 @@
 
 % Smooths Tracking Coordinates, Adds Padding and Saves Coordinates for all NMJs
 
-function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,FileNameApp,nNmjs)
+function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,directory,FileNameApp,nNmjs)
     
     for nmjNum = 1:nNmjs
     
@@ -30,7 +30,9 @@ function [] = save_smooth_coors(reader,trackingCoordinates,nFrames,maxFrameNum,F
        	nmjMovie = trackedMov;
 
         thisfilename = strcat(FileNameApp,'_registerNMJ','_',num2str(nmjNum),'.mat');
-        save(thisfilename,'trackingCoords','trackingCoordsSmoothed','trackedMov','nmjMovie','maxFrameNum','-v7.3');
+        track_dir = fullfile(directory, 'track')
+        mkdir(track_dir)
+        save([track_dir '/' thisfilename],'trackingCoords','trackingCoordsSmoothed','trackedMov','nmjMovie','maxFrameNum','-v7.3');
         
 	clear trackedMov trackingCoordsSmoothed trackingCoords
 

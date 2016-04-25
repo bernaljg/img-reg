@@ -1,11 +1,11 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,affined_nmjs)
+function [demonized_mov, disp_fields] = apply_demon_transf(roiFile,affined_nmjs)
 
-    vars = load(roiFiles(movieNum).name)
+    vars = load(roiFile)
     nNmjs = vars.nNmjs
-    nFrames = 200 %vars.nFrames;
+    nFrames = vars.nFrames;
     maxFrameNum = vars.maxFrameNum;
     
 	demonized_mov = cell(nNmjs,1);
@@ -16,19 +16,19 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFiles,movieNum,aff
 		disp(['Starting Demon NMJ #: ',num2str(nmjNum)])
 
 		refFrameNorm = affined_nmj(:,:,maxFrameNum);
-		refFrame = enhanceContrast(refFrameNorm);
+		refFrame = enhanceContrastDemon(refFrameNorm);
 
 		demonDispFields = cell(nFrames,1);
 		demon=zeros(size(refFrame,1),size(refFrame,2),nFrames,'uint16');
 
 		for qq = 1:nFrames
 		    frameNorm = affined_nmj(:,:,qq);
-		    movingFrame=enhanceContrast(frameNorm);
+		    movingFrame=enhanceContrastDemon(frameNorm);
 		    
 		    [dField,movingRegistered] = imregdemons(movingFrame,refFrame,[400 200 100],...
 		    'PyramidLevels',3,'AccumulatedFieldSmoothing',1);
 
-		    %movingRegistered = imwarp(frameNorm,dField);  
+		    movingRegistered = imwarp(frameNorm,dField);  
 		    
 		    demonDispFields{qq,1}=dField;
 		    demon(:,:,qq)=(movingRegistered);

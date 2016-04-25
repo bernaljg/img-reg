@@ -2,13 +2,13 @@
 % 03/17/2016
 
 
-function [] = save_affine_mov(affineTransforms,trackedMov,trackedFileNames,maxFrameNum,nFrames,nNmjs)
+function [] = save_affine_mov(affineTransforms,trackedMov,directory,trackedFileNames,maxFrameNum,nFrames,nNmjs)
 
     for nmjNum = 1:nNmjs
         tfAffine = affineTransforms{nmjNum,1};
         trackedNmjMov = trackedMov{nmjNum,1};
         Rfixed = imref2d(size(trackedNmjMov(:,:,maxFrameNum)));
-        affineMov = zeros(size(trackedNmjMov),'uint16');
+        affine = zeros(size(trackedNmjMov),'uint16');
 	
 	[t1s,t2s,s1s,s2s,sh1s,sh2s] = smooth_affine(tfAffine,nFrames);
 
@@ -18,25 +18,27 @@ function [] = save_affine_mov(affineTransforms,trackedMov,trackedFileNames,maxFr
             tfAffineSmoothed{tNum,1} = thisTform;
             frame2register = trackedNmjMov(:,:,tNum);
             [movingRegisteredAffine,~] = imwarp(frame2register,thisTform,'OutputView',Rfixed);
-            affineMov(:,:,tNum) = movingRegisteredAffine;
+            affine(:,:,tNum) = movingRegisteredAffine;
         end
 
-	nmjMovie = affineMov;
+	nmjMovie = affine;
            
-        checkEveryXFrames = 40; % needs to be multiple of nFrames
-        checkAffineRegistration = zeros(size(affineMov,1),size(affineMov,2),nFrames/checkEveryXFrames,'uint16');
+        checkEveryXFrames = 10; % needs to be multiple of nFrames
+        checkAffineRegistration = zeros(size(affine,1),size(affine,2),nFrames/checkEveryXFrames,'uint16');
         cntr = 1;
 
 	for checkFrameNum = 1:checkEveryXFrames:nFrames      
-        	checkAffineRegistration(:,:,cntr) = imadjust(affineMov(:,:,checkFrameNum));
+        	checkAffineRegistration(:,:,cntr) = imadjust(affine(:,:,checkFrameNum));
         	cntr = cntr+1;
         end
         clear cntr
         disp(['Finished Affine NMJ #: ',num2str(nmjNum)]);   
 
-        FileNameApp = trackedFileNames(nmjNum).name;
-        save(FileNameApp,'tfAffine','tfAffineSmoothed','affineMov','nmjMovie','checkAffineRegistration','-append')
-        clear affineMov tfAffine tfAffineSmoothed checkAffineRegistration
+        FileNameApp = strcat(trackedFileNames(nmjNum).name);
+        affine_dir = fullfile(directory,'affine');
+        mkdir(affine_dir)
+        save([affine_dir '/' FileNameApp],'tfAffine','tfAffineSmoothed','affine','nmjMovie','checkAffineRegistration')
+        clear affine tfAffine tfAffineSmoothed checkAffineRegistration
     end       
     
 end
