@@ -27,7 +27,7 @@ mkdir(movOutputDir);
 copyfile(roiFile,movOutputDir);
 
 %%% Tracks and Crops NMJs from Movies
-if exist('skipTrack')
+if skipTrack
     disp('Skipping NMJ Tracking')
 else
     % Loads the reader using bftools       
@@ -77,9 +77,10 @@ if exist('skipDemon')
 else
     % Loads variables
     load(roiFile);
-    numOfNodes = 4 
+    numOfNodes = 20
     % Loads affined nmj movies into array 
-    nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,skipAffine);
+    takeFromTracked = false
+    nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,takeFromTracked);
     
     batchDir = save_batches(roiFile, nmjMovie,movOutputDir,numOfNodes,nNmjs)
     

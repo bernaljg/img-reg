@@ -15,4 +15,4 @@
 #SBATCH --constraint=cortex_nogpu
 
 module load matlab/R2016a
-matlab -nosplash -nodisplay -r "postSelectMovReg; exit;"
+matlab -nosplash -nodisplay -r "skipTrack=true;skipAffine=true;postSelectMovReg; exit;"
