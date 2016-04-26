@@ -77,7 +77,6 @@ if exist('skipDemon')
 else
     % Loads variables
     load(roiFile);
-    numOfNodes = 20
 
     %Flag to load movies from tracked or affine folder
     loadFromTracked = false
@@ -88,11 +87,10 @@ else
     % Loads affined nmj movies into array 
     tic
     % Finds and applies demon transformation onto affined nmjs in this movie
-    [disp_fields_gpu, demonized_mov_gpu] = apply_demon_transf(roiFile,nmjMovie);
+    [disp_fields, demonized_mov] = apply_demon_transf(roiFile,nmjMovie);
+
     demonTime = toc
     
-    demonized_mov = gather(demonized_mov_gpu);
-    disp_fields = gather(disp_fields_gpu);
     tic
     % Saves demonized nmj movies for this movie
     save_demon_mov(demonized_mov,disp_fields,movOutputDir, trackedFileNames,nNmjs,skipAffine);

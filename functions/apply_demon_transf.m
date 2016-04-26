@@ -1,7 +1,7 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [demonized_mov, disp_fields] = apply_demon_transf(roiFile,affined_nmjs)
+function [disp_fields,demonized_mov] = apply_demon_transf(roiFile,affined_nmjs)
 
     vars = load(roiFile)
     nNmjs = vars.nNmjs
@@ -31,7 +31,7 @@ function [demonized_mov, disp_fields] = apply_demon_transf(roiFile,affined_nmjs)
 		    movingRegistered = imwarp(frameNorm,dField);  
 		    
 		    demonDispFields{qq,1}=dField;
-		    demon(:,:,qq)=(movingRegistered);
+		    demon(:,:,qq)=movingRegistered;
 		    disp(['NMJ #: ',num2str(nmjNum),' Frame #: ',num2str(qq)]);   
 	  
 		end

@@ -9,7 +9,7 @@
 #SBATCH --time=2:00:00
 #
 # Memory:
-#SBATCH --mem-per-cpu=5000
+#SBATCH --mem-per-cpu=7000
 #
 # Constraint:
 #SBATCH --constraint=cortex_nogpu
