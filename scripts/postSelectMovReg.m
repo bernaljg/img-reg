@@ -79,7 +79,7 @@ else
     load(roiFile);
     numOfNodes = 20
     % Loads affined nmj movies into array 
-    takeFromTracked = false
+    takeFromTracked = true
     nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,takeFromTracked);
     
     batchDir = save_batches(roiFile, nmjMovie,movOutputDir,numOfNodes,nNmjs)

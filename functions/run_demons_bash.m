@@ -17,9 +17,9 @@ function [] = run_demons_bash(batchDir,roiFile,numOfNodes)
 		fprintf(fid,['#\n']);
 		fprintf(fid,['# Partition:\n']);
 		fprintf(fid,['#SBATCH -p cortex\n']);
-		%fprintf(fid,['#\n']);
-		%fprintf(fid,['# Constrain Nodes:\n']);
-		%fprintf(fid,['#SBATCH --constraint=cortex_nogpu\n']);
+		fprintf(fid,['#\n']);
+		fprintf(fid,['# Constrain Nodes:\n']);
+		fprintf(fid,['#SBATCH --constraint=cortex_k40\n']);
 		fprintf(fid,['#\n']);
 		fprintf(fid,['# Processors:\n']);
 		fprintf(fid,['#SBATCH -n 1\n']);
