@@ -3,7 +3,7 @@
 
 function [] = save_compare_mov(directory, movie1, movie2)
 
-size_mov = size(demon);
+size_mov = size(movie1);
 padding = zeros(25,size_mov(2),size_mov(3));
 
 compare_mov = cat(1,movie1,padding,movie2);

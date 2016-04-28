@@ -1,11 +1,7 @@
 % Created by: Bernal Jimenez
 % 03/17/2016
 
-function [] = parallel_demon_reg(roiFile,batchFile)
-
-    params = load(roiFile);
-    nNmjs = params.nNmjs;
-    nFrames = params.nFramesPerBatch;
+function [] = parallel_demon_reg_test(nNmjs,nFrames,batchFile)
 
     load(batchFile)
 
@@ -44,12 +40,18 @@ function [] = parallel_demon_reg(roiFile,batchFile)
 		
 		    %Pass Arrays to GPU
 		    movingFrameGPU = gpuArray(movingFrame);
-		    
+		    movingRegGPU = movingFrameGPU;
+
 		    %Apply Demons Transformation
-		    [localDispField,movingRegGPU] = imregdemons(movingFrameGPU,localMaxFrameGPU,[200,100,50],'PyramidLevels',3);
-		    [globalDispField,movingRegGPU] = imregdemons(movingRegGPU,refFrameGPU,[100,50,20,1],'PyramidLevels',4);
-		    
-		    dFieldGPU = gather(localDispField+globalDispField);
+		    [dispField,movingRegGPU] = imregdemons(movingRegGPU,refFrameGPU,[1],'PyramidLevels',1);
+
+		    for i=1:10
+		    [localDispField,movingRegGPU] = imregdemons(movingRegGPU,localMaxFrameGPU,[20,20,10,1,1],'PyramidLevels',5);
+		    [globalDispField,movingRegGPU] = imregdemons(movingRegGPU,refFrameGPU,[20,20,10,1,1],'PyramidLevels',5);		    
+		    dispField = dispField + localDispField + globalDispField;
+	    	    end
+
+		    dFieldGPU = gather(dispField);
 		    movingRegGPU = imwarp(frameNorm,dFieldGPU);
 	    
 		    demonDispFields{qq,1} = dFieldGPU; 
@@ -61,8 +63,11 @@ function [] = parallel_demon_reg(roiFile,batchFile)
 
 		demonized_mov{nmjNum,1}=gather(demonGPU);
 		disp_fields{nmjNum,1}=demonDispFields; 
+	        
+		demon_variable = genvarname(['demonized_mov',num2str(batchNum)])
+	        eval([demon_variable '= demonized_mov'])
 		
-		save(batchFile,'demonized_mov','disp_fields','demonTime','-append')	
+		save(batchFile,['demonized_mov',num2str(batchNum)],'disp_fields','demonTime','-append')	
 	   end
 
    else

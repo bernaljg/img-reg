@@ -1,16 +1,11 @@
-function batchDir = save_batches(roiFile, nmjMovie,movOutputDir, numOfNodes, nNmjs)
+function batchDir = save_batches(nmjMovie,movOutputDir, numOfNodes, nNmjs, nFramesPerBatch, maxFrameNum)
 	
-	load(roiFile)
-	assert(mod(nFrames,numOfNodes)==0,'Number of Nodes is not a factor of the number of frames. Parallelization might not be optimal.')
-
 	batchDir= fullfile(movOutputDir,'batches')
 	mkdir(batchDir)
 
-	nFramesPerBatch = nFrames/numOfNodes;
-	save(roiFile,'nFramesPerBatch','-append')
-
 	for nodeNum = 1:numOfNodes
-		
+		batchNum = nodeNum
+
 		batchNmjs = cell(nNmjs,1);
 		refFrames = cell(nNmjs,1);
 
@@ -19,7 +14,7 @@ function batchDir = save_batches(roiFile, nmjMovie,movOutputDir, numOfNodes, nNm
 			batchNmjs{nmjNum} = nmj(:,:,(nodeNum-1)*nFramesPerBatch+1:nodeNum*nFramesPerBatch);
 			refFrames{nmjNum} = nmj(:,:,maxFrameNum);
 
-		save([batchDir '/Batch' num2str(nodeNum)],'batchNmjs','refFrames')
+		save([batchDir '/Batch' num2str(nodeNum)],'batchNmjs','refFrames','batchNum')
 
 		end
 	end

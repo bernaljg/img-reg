@@ -1,24 +1,9 @@
-%%% Choose directories
-[moviesToRegisterDir,outputDir] = choose_dirs();
-[fileNames,roiFullFiles,cziFullFiles,nMovies] = load_mov_names(moviesToRegisterDir);
-
-if exist('skipAffine')
-skipAffine = skipAffine
-else
-skipAffine = false
-end
-
-for movieNum=1:1%nMovies;
-%try    
-% Loads variables
-fileName = fileNames{movieNum};
-roiFile = roiFullFiles{movieNum};
+function [] = postSelectMovReg(moviesToRegisterDir,outputDir,fileName,roiFile,cziFile,skipTrack,skipAffine)
 
 %Change the Number of Frames for testing
 nFrames=1000
 save(roiFile,'nFrames','-append')
 
-cziFile = cziFullFiles{movieNum};
 load(roiFile);
 
 %Makes output folder
@@ -78,18 +63,21 @@ else
     % Loads variables
     load(roiFile);
     numOfNodes = 20
+    
     % Loads affined nmj movies into array 
     takeFromTracked = true
     nmjMovie = load_nmjs(nNmjs,movOutputDir, trackedFileNames,takeFromTracked);
     
-    batchDir = save_batches(roiFile, nmjMovie,movOutputDir,numOfNodes,nNmjs)
+    nFramesPerBatch = nFrames/numOfNodes;
+    save(roiFile,'nFramesPerBatch','-append')
+    
+    batchDir = save_batches(nmjMovie,movOutputDir,numOfNodes,nNmjs,nFramesPerBatch,maxFrameNum)
     
     completedBatches = 0
     save(roiFile,'completedBatches','-append') 
-    run_demons_bash(batchDir,roiFile,numOfNodes)
+    run_demons_bash(batchDir,nNmjs,nFramesPerBatch,numOfNodes)
     
-    join_movies(batchDir,roiFile,movOutputDir,numOfNodes) 
-end
+    join_movies(batchDir,nNmjs,movOutputDir,numOfNodes) 
 end
 
 disp('Success')

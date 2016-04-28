@@ -2,7 +2,7 @@
 %4/14/2016
 
 
-function [] = run_demons_bash(batchDir,roiFile,numOfNodes)
+function [] = run_demons_bash(batchDir,nNmjs,nFrames,numOfNodes)
 	
 	cd(batchDir)
 	for nodeNum=1:numOfNodes
@@ -44,17 +44,14 @@ function [] = run_demons_bash(batchDir,roiFile,numOfNodes)
 		fprintf(fid,['matlab -nosplash -nodesktop -noFigureWindows << EOF\n']);   % was matlab -nodisplay but that stopped working on cluster.
 		fprintf(fid,['\n']);
 		fprintf(fid,['cd(', mat2str(batchDir), ');\n']);
-		fprintf(fid,['batch', num2str(nodeNum),'Complete=false\n']);
-		fprintf(fid,['save(',mat2str(roiFile),',''batch',num2str(nodeNum),'Complete'',''-append'');\n']);
-		fprintf(fid,['parallel_demon_reg(',mat2str(roiFile),',',mat2str(batchFile),');\n']);
+		fprintf(fid,['parallel_demon_reg_test(',num2str(nNmjs),',',num2str(nFrames),',',mat2str(batchFile),');\n']);
 		fprintf(fid,['batch', num2str(nodeNum),'Complete=true\n']);
-		fprintf(fid,['save(',mat2str(roiFile),',''batch',num2str(nodeNum),'Complete'',''-append'');\n']);
+		fprintf(fid,['save(''completed_batch',num2str(nodeNum),'.mat'',''batch',num2str(nodeNum),'Complete'');\n']);
 		fprintf(fid,['exit\n']);
 		fprintf(fid,['EOF\n']);
 		fclose(fid);
 
 		!sbatch batchscript.sh
-		pause(3)
 	end
 
 

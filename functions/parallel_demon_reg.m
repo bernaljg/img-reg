@@ -54,9 +54,12 @@ function [] = parallel_demon_reg(roiFile,batchFile)
 		demonTime = toc
 
 		demonized_mov{nmjNum,1}=gather(demonGPU);
-		disp_fields{nmjNum,1}=demonDispFields; 
+		disp_fields{nmjNum,1}=demonDispFields;
+	        
+		demon_variable = genvarname(['demonized_mov',num2str(batchNum)])
+	        eval([demon_variable '= demonized_mov'])
 		
-		save(batchFile,'demonized_mov','disp_fields','demonTime','-append')	
+		save(batchFile,['demonized_mov',num2str(batchNum)],'disp_fields','demonTime','-append')	
 	   end
 
    else
