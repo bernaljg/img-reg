@@ -1,24 +1,10 @@
-%%% Choose directories
-[moviesToRegisterDir,outputDir] = choose_dirs();
-[fileNames,roiFullFiles,cziFullFiles,nMovies] = load_mov_names(moviesToRegisterDir);
 
-if exist('skipAffine')
-skipAffine = skipAffine
-else
-skipAffine = false
-end
-
-for movieNum=1:1%nMovies;
-%try    
-% Loads variables
-fileName = fileNames{movieNum};
-roiFile = roiFullFiles{movieNum};
+function [] = postSelectMovReg(moviesToRegisterDir,outputDir,fileName,roiFile,cziFile,skipTrack,skipAffine)
 
 %Change the Number of Frames for testing
 nFrames=1000
 save(roiFile,'nFrames','-append')
 
-cziFile = cziFullFiles{movieNum};
 load(roiFile);
 
 %Makes output folder
@@ -97,7 +83,6 @@ else
     savingDemonTime = toc
     save([movOutputDir '/Demon Timing Log'],'demonTime','savingDemonTime') 
 
-end
 end
 
 disp('Success')
